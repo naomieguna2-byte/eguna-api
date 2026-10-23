@@ -4,24 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
-    // Retrieve all students
+    // GET: Retrieve all students
     public function index()
     {
         return response()->json(Student::all(), 200);
     }
 
-    // Create a student
+    // POST: Create a student
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'student_number' => 'required|string|max:50|unique:students,student_number',
             'firstname' => 'required|string|max:255',
             'middlename' => 'nullable|string|max:255',
             'lastname' => 'required|string|max:255',
             'email' => 'required|email|unique:students,email',
             'course' => 'required|string|max:255',
+            'year_level' => 'required|integer|min:1|max:6',
         ]);
 
         $student = Student::create($validated);
@@ -32,7 +35,7 @@ class StudentController extends Controller
         ], 201);
     }
 
-    // Retrieve one student
+    // GET: Retrieve one student by ID
     public function show(string $id)
     {
         $student = Student::find($id);
@@ -46,7 +49,7 @@ class StudentController extends Controller
         return response()->json($student, 200);
     }
 
-    // Update a student
+    // PUT/PATCH: Update a student
     public function update(Request $request, string $id)
     {
         $student = Student::find($id);
@@ -58,22 +61,37 @@ class StudentController extends Controller
         }
 
         $validated = $request->validate([
-            'firstname' => 'required|string|max:255',
-            'middlename' => 'nullable|string|max:255',
-            'lastname' => 'required|string|max:255',
-            'email' => 'required|email|unique:students,email,' . $student->id,
-            'course' => 'required|string|max:255',
+            'student_number' => [
+                'sometimes',
+                'required',
+                'string',
+                'max:50',
+                Rule::unique('students', 'student_number')
+                    ->ignore($student->id),
+            ],
+            'firstname' => 'sometimes|required|string|max:255',
+            'middlename' => 'sometimes|nullable|string|max:255',
+            'lastname' => 'sometimes|required|string|max:255',
+            'email' => [
+                'sometimes',
+                'required',
+                'email',
+                Rule::unique('students', 'email')
+                    ->ignore($student->id),
+            ],
+            'course' => 'sometimes|required|string|max:255',
+            'year_level' => 'sometimes|required|integer|min:1|max:6',
         ]);
 
         $student->update($validated);
 
         return response()->json([
             'message' => 'Student updated successfully.',
-            'data' => $student,
+            'data' => $student->fresh(),
         ], 200);
     }
 
-    // Delete a student
+    // DELETE: Delete a student
     public function destroy(string $id)
     {
         $student = Student::find($id);
