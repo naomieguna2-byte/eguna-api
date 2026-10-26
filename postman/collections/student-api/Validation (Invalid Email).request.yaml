@@ -3,5 +3,21 @@ url: http://127.0.0.1:8000/api/students
 method: POST
 body:
   type: json
-  content: ""
+  content: "{\r
+
+    \  \"student_number\": \"2026-1098\",\r
+
+    \  \"firstname\": \"Juan\",\r
+
+    \  \"middlename\": \"Santos\",\r
+
+    \  \"lastname\": \"Dela Cruz\",\r
+
+    \  \"email\": \"not an email add\",\r
+
+    \  \"course\": \"BSIT\",\r
+
+    \  \"year_level\": 5\r
+
+    }"
 order: 7000

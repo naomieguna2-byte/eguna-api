@@ -8,13 +8,13 @@ use Illuminate\Validation\Rule;
 
 class StudentController extends Controller
 {
-    // GET: Retrieve all students
+    
     public function index()
     {
         return response()->json(Student::all(), 200);
     }
 
-    // POST: Create a student
+    
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -35,7 +35,7 @@ class StudentController extends Controller
         ], 201);
     }
 
-    // GET: Retrieve one student by ID
+    
     public function show(string $id)
     {
         $student = Student::find($id);
@@ -49,7 +49,7 @@ class StudentController extends Controller
         return response()->json($student, 200);
     }
 
-    // PUT/PATCH: Update a student
+    
     public function update(Request $request, string $id)
     {
         $student = Student::find($id);
@@ -91,7 +91,7 @@ class StudentController extends Controller
         ], 200);
     }
 
-    // DELETE: Delete a student
+    
     public function destroy(string $id)
     {
         $student = Student::find($id);
